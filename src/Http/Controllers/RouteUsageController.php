@@ -5,11 +5,15 @@ namespace Julienbourdeau\RouteUsage\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Julienbourdeau\RouteUsage\RouteUsage;
+use Illuminate\Support\Facades\Gate;
 
 class RouteUsageController extends Controller
 {
     public function index(Request $request)
     {
+        $mayAccess = Gate::has('viewRouteUsage') ? Gate::allows('viewRouteUsage') : true;
+        abort_unless($mayAccess, 403);
+        
         $order = $request->get('orderBy') ?? 'updated_at';
         $sort = $request->get('sort') ?? 'asc';
 
